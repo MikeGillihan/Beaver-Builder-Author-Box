@@ -11,7 +11,7 @@ Easily add an Author Box to your Beaver Builder theme powered site.
 
 == Installation ==
 
-Install Easy Author Box for Beaver builder via the plugin directory, or by uploading the files manually to your server.
+Install Easy Author Box for Beaver Builder by uploading the files manually to your server.
 
 e.g.
 

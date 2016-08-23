@@ -39,10 +39,7 @@
 // If this file is called directly, abort.
 defined( 'WPINC' ) or die( 'Get off my lawn!' );
 
-// Pull in WP Helpers
-include( plugin_dir_path( __FILE__ ) .  'lib/wp-helpers.php' );
-
-class PWP_Easy_Author_Box extends WP_Helpers {
+class PWP_Easy_Author_Box {
 	protected static $instance;
 	public static $version   = '0.1.0';
 	public static $namespace = 'pwp-eab-bbt';
@@ -96,12 +93,11 @@ class PWP_Easy_Author_Box extends WP_Helpers {
 	 * Get Author Box
 	 */
 	public function pwp_get_author_box() {
-		if ( get_theme_mod( 'pwp_eab_location' ) === 'before-content' ) {
-			add_action( 'fl_post_top_meta_close', array( $this, 'pwp_author_box' ) );
-		} elseif ( get_theme_mod( 'pwp_eab_location' ) === 'after-post-meta' ) {
-			add_action( 'fl_post_bottom_meta_close', array( $this, 'pwp_author_box' ) );
-		} else {
+
+		if ( get_theme_mod( 'pwp_eab_location' ) != 'after-post-meta' ) {
 			add_filter( 'the_content', array( $this, 'pwp_author_box' ) );
+		} else {
+			add_action( 'fl_post_bottom_meta_close', array( $this, 'pwp_author_box' ) );
 		}
 
 		return;
@@ -114,22 +110,59 @@ class PWP_Easy_Author_Box extends WP_Helpers {
 	 */
 	public function pwp_author_box( $content ) {
 
-		$author_bio = get_the_author_meta( 'user_description' );
+		$alt  = get_the_author();
+		$args = array(
+			'class' => 'media-object'
+			);
+		$author_archive      = get_author_posts_url( get_the_author_meta( 'ID' ) );
+		$author_avatar       = get_avatar( get_the_author_meta( 'ID' ), '', '', $alt, $args );
+		$author_bio          = get_the_author_meta( 'user_description' );
+		$author_display_name = get_the_author_meta( 'display_name' );
+		$author_facebook     = get_the_author_meta( 'facebook' );
+		$author_twitter      = get_the_author_meta( 'twitter' );
+		$author_googleplus   = get_the_author_meta( 'googleplus' );
+		$author_website      = get_the_author_meta( 'url' );
 
+		// If display name is not available then use nickname as display name
+		if ( empty( $author_display_name ) )
+			$author_display_name = get_the_author_meta( 'nickname' );
+
+		// If we're not on a blog post or the author has no bio then bug out early
 		if ( ! is_singular( 'post' ) || empty( $author_bio ) )
-			return $content;
+			return;
 
-		if ( get_theme_mod( 'pwp_eab_location' ) != 'after-content' ) {
-			include( plugin_dir_path( __FILE__ ) . 'templates/author-box.php' );
-			return $content;
-		}
+		$the_content = $content;
+		$eab  = '<div class="fl-author-bio clearfix media well">';
+		$eab .= '<div class="fl-author-bio-thumb media-left">' . $author_avatar . '</div>';
+		$eab .= '<div class="fl-author-bio-text media-body">';
+		$eab .= '<h3 class="media-heading">About <a href="<?php $author_archive ?>">' . $author_display_name . '</a></h3>';
+		$eab .= '<p>' . $author_bio . '</p>';
+		$eab .= '<div class="social-buttons">';
 
-		ob_start();
-		include( plugin_dir_path( __FILE__ ) . 'templates/author-box.php' );
-		$author_box = ob_get_contents();
-		ob_end_clean();
+		if ( $author_facebook != '' )
+			$eab .= '<a href="' . $author_facebook . '" class="fl-button btn btn-default btn-sm btn-facebook" role="button" target="_blank">Facebook</a>';
 
-		return $content . $author_box;
+		if ( $author_twitter != '' )
+			$eab .= '<a href="https://twitter.com/' . $author_twitter . '" class="fl-button btn btn-default btn-sm btn-twitter" role="button" target="_blank">Twitter</a>';
+
+		if ( $author_googleplus != '' )
+			$eab .= '<a href="https://plus.google.com/+' . $author_googleplus . '" class="fl-button btn btn-default btn-sm btn-googleplus" role="button" target="_blank">Google +</a>';
+
+		if ( $author_website != '' )
+			$eab .= '<a href="' . $author_website . '" class="fl-button btn btn-default btn-sm btn-website" role="button" target="_blank">Website</a>';
+
+		$eab .= '</div></div></div>';
+
+		if ( get_theme_mod( 'pwp_eab_location' ) === 'before-content' )
+			return $eab . $content;
+
+		if ( get_theme_mod( 'pwp_eab_location' ) === 'after-content' )
+			return $content . $eab;
+
+		if ( get_theme_mod( 'pwp_eab_location' ) === 'after-post-meta' )
+			echo $eab;
+
+		return $content;
 	}
 }
 new PWP_Easy_Author_Box;

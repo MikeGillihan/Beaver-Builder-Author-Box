@@ -31,7 +31,7 @@ if ( empty( $author_display_name ) )
 		<?php echo $author_avatar; ?>
 	</div>
 	<div class="fl-author-bio-text media-body">
-		<h3 class="media-heading">About <a href="<?php $author_archive ?>"><?php echo $author_display_name; ?></a></h3>
+		<h3 class="media-heading">About <a href="<?php echo $author_archive ?>"><?php echo $author_display_name; ?></a></h3>
 		<p><?php echo $author_bio; ?></p>
 		<div class="social-buttons">
 			<?php if ( $author_facebook != '' ) { ?>
@@ -41,10 +41,10 @@ if ( empty( $author_display_name ) )
 				<a href="https://twitter.com/<?php echo $author_twitter; ?>" class="fl-button btn btn-default btn-sm btn-twitter" role="button" target="_blank">Twitter</a>
 			<?php }
 			if ( $author_googleplus != '' ) { ?>
-				<a href="<?php $author_googleplus; ?>" class="fl-button btn btn-default btn-sm btn-googleplus" role="button" target="_blank">Google +</a>
+				<a href="<?php echo $author_googleplus; ?>" class="fl-button btn btn-default btn-sm btn-googleplus" role="button" target="_blank">Google +</a>
 			<?php }
 			if ( $author_website != '' ) { ?>
-				<a href="<?php $author_website; ?>" class="fl-button btn btn-default btn-sm btn-website" role="button" target="_blank">Website</a>
+				<a href="<?php echo $author_website; ?>" class="fl-button btn btn-default btn-sm btn-website" role="button" target="_blank">Website</a>
 			<?php }	?>
 		</div>
 	</div>

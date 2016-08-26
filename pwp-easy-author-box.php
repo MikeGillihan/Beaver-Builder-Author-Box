@@ -154,10 +154,10 @@ class PWP_Easy_Author_Box {
 		$eab .= '</div></div></div>';
 
 		if ( get_theme_mod( 'pwp_eab_location' ) === 'before-content' )
-			return $eab . $content;
+			return $eab . $the_content;
 
 		if ( get_theme_mod( 'pwp_eab_location' ) === 'after-content' )
-			return $content . $eab;
+			return $the_content . $eab;
 
 		if ( get_theme_mod( 'pwp_eab_location' ) === 'after-post-meta' )
 			echo $eab;
